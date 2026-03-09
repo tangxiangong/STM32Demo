@@ -19,6 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "gpio.h"
+#include "usart.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -87,6 +88,7 @@ int main(void) {
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
+    MX_USART3_UART_Init();
     /* USER CODE BEGIN 2 */
 
     /* USER CODE END 2 */
@@ -105,6 +107,7 @@ int main(void) {
         HAL_Delay(1000);
         HAL_GPIO_WritePin(LED_B_GPIO_Port, LED_B_Pin, GPIO_PIN_SET);
         /* USER CODE END WHILE */
+
         /* USER CODE BEGIN 3 */
     }
     /* USER CODE END 3 */
