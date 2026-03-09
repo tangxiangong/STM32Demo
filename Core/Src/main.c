@@ -18,7 +18,9 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "gpio.h"
+#include "stm32f1xx_hal_uart.h"
 #include "usart.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -44,7 +46,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+char receive_message[50];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,7 +57,14 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size) {
+    if (huart == &huart3) {
+        HAL_UART_Transmit_DMA(&huart3, (uint8_t *)receive_message, Size);
+    }
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart3, (uint8_t *)receive_message,
+                                 sizeof(receive_message));
+    __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
+}
 /* USER CODE END 0 */
 
 /**
@@ -88,9 +97,12 @@ int main(void) {
 
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
+    MX_DMA_Init();
     MX_USART3_UART_Init();
     /* USER CODE BEGIN 2 */
-
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart3, (uint8_t *)receive_message,
+                                 sizeof(receive_message));
+    __HAL_DMA_DISABLE_IT(&hdma_usart3_rx, DMA_IT_HT);
     /* USER CODE END 2 */
 
     /* Infinite loop */
